@@ -1,2 +1,11 @@
-# SEP740
-Final project for SEP 740 - Deep Learning at McMaster University
+# SEP740 - Deep Learning (McMaster University)
+
+### Aerial Perspective Object Detection
+
+### Authors:
+
+Jukai Hu
+
+Ray Albert Pangilinan
+
+Luke Vanden Broek
