@@ -8,7 +8,6 @@
 # Data Distribution (113.png)
 
 import os.path
-from turtle import color
 cwd = os.getcwd()
 
 import matplotlib. pyplot as plt
