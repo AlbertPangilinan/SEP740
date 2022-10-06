@@ -5,9 +5,10 @@
 #   Ray Albert Pangilinan (400065058)
 #   Luke Vanden Broek (400486889)
 
-# Data Distribution
+# Data Distribution (113.png)
 
 import os.path
+from turtle import color
 cwd = os.getcwd()
 
 import matplotlib. pyplot as plt
@@ -16,21 +17,30 @@ import numpy as np
 import pandas as pd
 
 labels_dir = cwd + "/../dataset/class_dict_seg.csv"
-images_dir = cwd + "/../dataset/dataset/semantic_drone_dataset/original_images/"
 masks_dir = cwd + "/../dataset/RGB_color_image_masks/RGB_color_image_masks/"
 
-labels = pd.read_csv(labels_dir)
-labels.insert(4, "count", 0)
+distribution = pd.read_csv(labels_dir)
+rgb_arr = distribution.to_numpy()[:, 1:]
+distribution.insert(4, "count", 0)
 
-print(labels)
-
-images_list = os.listdir(images_dir)
 masks_list = os.listdir(masks_dir)
+mask_0_filename = masks_list[0]
 
-images_list = list(map(lambda img : images_dir + img, images_list))
-masks_list = list(map(lambda img : masks_dir + img, masks_list))
+masks_list = list(map(lambda mask : masks_dir + mask, masks_list))
+mask_0_rgb = np.array(image.imread(masks_list[0])) * 255
 
-# img = image.imread(masks_list[0])
-# print(np.array(img) * 255)
-# plt.imshow(img)
-# plt.show()
+for row in mask_0_rgb:
+  for pixel in row[:1]:
+    i, = np.where(np.prod(rgb_arr == pixel, axis=-1))
+    distribution.at[i[0], "count"] += 1
+
+print(distribution)
+labels = distribution.to_numpy()[:, :1].flatten()
+rgb_tuples = list(map(lambda col : tuple(col / 255), rgb_arr))
+
+plt.bar(range(len(labels)), distribution.loc[:, "count"], color=rgb_tuples)
+plt.title("Pixel Class Distribution for " + mask_0_filename)
+plt.xticks(range(len(labels)), labels)
+plt.xlabel("Class")
+plt.ylabel("Count")
+plt.show()
