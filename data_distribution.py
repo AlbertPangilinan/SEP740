@@ -51,7 +51,7 @@ plt.show()
 # Counting pixel distribution
 
 for row in mask_0_rgb:
-  for pixel in row[:1]:
+  for pixel in row:
     i, = np.where(np.prod(rgb_arr == pixel, axis=-1))
     distribution.at[i[0], "count"] += 1
 
