@@ -59,7 +59,7 @@ print(distribution)
 
 # Plotting pixel distribution
 
-plt.bar(range(len(labels)), distribution.loc[:, "count"], color=rgb_tuples)
+plt.bar(range(len(labels)), distribution.loc[:, "count"], color=rgb_tuples, width=1)
 plt.title("Pixel Class Distribution for " + mask_0_filename)
 plt.xticks(range(len(labels)), labels, rotation=90)
 plt.xlabel("Class")
