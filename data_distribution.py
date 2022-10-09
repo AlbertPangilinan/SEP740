@@ -13,8 +13,8 @@ import os.path
 cwd = os.getcwd()
 
 import matplotlib. pyplot as plt
-import matplotlib.image as image
 import numpy as np
+from PIL import Image
 import pandas as pd
 
 # Reading color image mask files from disk
@@ -26,12 +26,12 @@ distribution = pd.read_csv(labels_dir)
 rgb_arr = distribution.to_numpy()[:, 1:]
 distribution.insert(4, "count", 0)
 
-masks_list = os.listdir(masks_dir)
-masks_list.sort()
-mask_0_filename = masks_list[0]
+masks_paths = os.listdir(masks_dir)
+masks_paths.sort()
+mask_0_filename = masks_paths[0]
 
-masks_list = list(map(lambda mask : masks_dir + mask, masks_list))
-mask_0_rgb = np.array(image.imread(masks_list[0])) * 255
+masks_paths = list(map(lambda mask : masks_dir + mask, masks_paths))
+mask_0_rgb = np.array(Image.open(mask_0_filename)) * 255
 
 # Plotting colour legend
 
