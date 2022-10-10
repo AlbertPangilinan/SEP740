@@ -20,7 +20,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 
-# Reading color image mask files from disk
+# Reading raw image and class label files from disk
 
 images_dir = cwd + "/../dataset/dataset/semantic_drone_dataset/original_images/"
 labels_dir = cwd + "/../dataset/dataset/semantic_drone_dataset/label_images_semantic/"
@@ -42,12 +42,16 @@ labels_paths.sort()
 images = list(map(lambda img : np.array(Image.open(img)), images_paths[:10]))
 labels = list(map(lambda img : np.array(Image.open(img)), labels_paths[:10]))
 
+# Defining ML algorithms
+
 rf = RandomForestClassifier(max_depth=2)
 knn = KNeighborsClassifier(n_neighbors = 3)
 nb = GaussianNB()
 
-for i in range(len(images) - 1):
+# Fitting each image to each model
 
+for i in range(len(images) - 1):
+  print("Fitting image " + str(i) + "...")
   image = images[i]
   label = labels[i]
 
@@ -58,9 +62,11 @@ for i in range(len(images) - 1):
   knn.fit(image_reshape, label_flatten)
   nb.fit(image_reshape, label_flatten)
 
-  print("image " + str(i) + " fitted to models")
+  print("Image " + str(i) + " fitted to all models.")
 
-print("all images fitted")
+# Predict labels for one image using trained models
+
+print("Predicting labels for image " + str(len(images) - 1) + "...")
 
 image_predict = images[-1]
 label_predict = labels[-1]
@@ -76,18 +82,9 @@ label_predict_rf_reshape = np.reshape(label_predict_rf, (4000, -1))
 label_predict_knn_reshape = np.reshape(label_predict_knn, (4000, -1))
 label_predict_nb_reshape = np.reshape(label_predict_nb, (4000, -1))
 
-print("image predicted")
+print("Labels for image " + str(len(images) - 1) + " predicted.")
 
-# fig, ax = plt.subplots(1, 3)
-
-# ax[0].imshow(image_predict)
-# ax[0].set_title("Image")
-
-# ax[1].imshow(label_predict)
-# ax[1].set_title("Labels")
-
-# ax[2].imshow(label_predict_svm_reshape)
-# ax[2].set_title("Predicted")
+# Plotting prediction results
 
 fig, ax = plt.subplots(2, 3)
 
