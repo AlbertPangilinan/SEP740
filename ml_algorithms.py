@@ -24,7 +24,6 @@ from sklearn.svm import SVC
 
 images_dir = cwd + "/../dataset/dataset/semantic_drone_dataset/original_images/"
 labels_dir = cwd + "/../dataset/dataset/semantic_drone_dataset/label_images_semantic/"
-# masks_dir = cwd + "/../dataset/RGB_color_image_masks/RGB_color_image_masks/"
 
 images_paths = os.listdir(images_dir)
 images_paths.sort()
@@ -34,32 +33,23 @@ labels_paths = os.listdir(labels_dir)
 labels_paths.sort()
 label_0_filename = labels_paths[0]
 
-# masks_paths = os.listdir(masks_dir)
-# masks_paths.sort()
-# mask_0_filename = masks_paths[0]
-
 images_paths = list(map(lambda img : images_dir + img, images_paths))
 labels_paths = list(map(lambda img : labels_dir + img, labels_paths))
-# masks_paths = list(map(lambda mask : masks_dir + mask, masks_paths))
 
 images_paths.sort()
 labels_paths.sort()
-# masks_paths.sort()
 
-images = list(map(lambda img : np.array(Image.open(img)), images_paths[:3]))
-labels = list(map(lambda img : np.array(Image.open(img)), labels_paths[:3]))
-# masks = list(map(lambda mask : np.array(Image.open(mask)), masks_paths[:10]))
+images = list(map(lambda img : np.array(Image.open(img)), images_paths[:10]))
+labels = list(map(lambda img : np.array(Image.open(img)), labels_paths[:10]))
 
 rf = RandomForestClassifier(max_depth=2)
 knn = KNeighborsClassifier(n_neighbors = 3)
 nb = GaussianNB()
-svm = SVC()
 
 for i in range(len(images) - 1):
 
   image = images[i]
   label = labels[i]
-  # mask = masks[0]
 
   image_reshape = image.reshape(-1, image.shape[-1])
   label_flatten = label.flatten()
@@ -67,7 +57,6 @@ for i in range(len(images) - 1):
   rf.fit(image_reshape, label_flatten)
   knn.fit(image_reshape, label_flatten)
   nb.fit(image_reshape, label_flatten)
-  # svm.fit(image_reshape, label_flatten)
 
   print("image " + str(i) + " fitted to models")
 
@@ -82,16 +71,14 @@ label_predict_flatten = label_predict.flatten()
 label_predict_rf = rf.predict(image_predict_reshape)
 label_predict_knn = knn.predict(image_predict_reshape)
 label_predict_nb = nb.predict(image_predict_reshape)
-# label_predict_svm = svm.predict(image_predict_reshape)
 
 label_predict_rf_reshape = np.reshape(label_predict_rf, (4000, -1))
 label_predict_knn_reshape = np.reshape(label_predict_knn, (4000, -1))
 label_predict_nb_reshape = np.reshape(label_predict_nb, (4000, -1))
-# label_predict_svm_reshape = np.reshape(label_predict_svm, (4000, -1))
 
 print("image predicted")
 
-fig, ax = plt.subplots(1, 3)
+# fig, ax = plt.subplots(1, 3)
 
 # ax[0].imshow(image_predict)
 # ax[0].set_title("Image")
@@ -110,16 +97,13 @@ ax[0, 0].set_title("Image")
 ax[0, 1].imshow(label_predict)
 ax[0, 1].set_title("Labels")
 
-ax[0, 2].imshow(label_predict_rf_reshape)
-ax[0, 2].set_title("RF")
+ax[1, 0].imshow(label_predict_rf_reshape)
+ax[1, 0].set_title("RF")
 
-ax[1, 0].imshow(label_predict_knn_reshape)
-ax[1, 0].set_title("KNN")
+ax[1, 1].imshow(label_predict_knn_reshape)
+ax[1, 1].set_title("KNN")
 
-ax[1, 1].imshow(label_predict_nb_reshape)
-ax[1, 1].set_title("NB")
-
-# ax[1, 2].imshow(label_predict_svm_reshape)
-# ax[1, 2].set_title("SVM")
+ax[1, 2].imshow(label_predict_nb_reshape)
+ax[1, 2].set_title("NB")
 
 plt.show()
