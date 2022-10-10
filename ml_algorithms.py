@@ -16,6 +16,9 @@ import matplotlib. pyplot as plt
 import numpy as np
 from PIL import Image
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
 
 # Reading color image mask files from disk
 
@@ -43,11 +46,14 @@ images_paths.sort()
 labels_paths.sort()
 # masks_paths.sort()
 
-images = list(map(lambda img : np.array(Image.open(img)), images_paths[:10]))
-labels = list(map(lambda img : np.array(Image.open(img)), labels_paths[:10]))
+images = list(map(lambda img : np.array(Image.open(img)), images_paths[:3]))
+labels = list(map(lambda img : np.array(Image.open(img)), labels_paths[:3]))
 # masks = list(map(lambda mask : np.array(Image.open(mask)), masks_paths[:10]))
 
 rf = RandomForestClassifier(max_depth=2)
+knn = KNeighborsClassifier(n_neighbors = 3)
+nb = GaussianNB()
+svm = SVC()
 
 for i in range(len(images) - 1):
 
@@ -59,8 +65,11 @@ for i in range(len(images) - 1):
   label_flatten = label.flatten()
 
   rf.fit(image_reshape, label_flatten)
+  knn.fit(image_reshape, label_flatten)
+  nb.fit(image_reshape, label_flatten)
+  # svm.fit(image_reshape, label_flatten)
 
-  print("image " + str(i) + " fitted to model")
+  print("image " + str(i) + " fitted to models")
 
 print("all images fitted")
 
@@ -70,20 +79,47 @@ label_predict = labels[-1]
 image_predict_reshape = image_predict.reshape(-1, image_predict.shape[-1])
 label_predict_flatten = label_predict.flatten()
 
-label_predict_result = rf.predict(image_predict_reshape)
-label_predict_result_reshape = np.reshape(label_predict_result, (4000, -1))
+label_predict_rf = rf.predict(image_predict_reshape)
+label_predict_knn = knn.predict(image_predict_reshape)
+label_predict_nb = nb.predict(image_predict_reshape)
+# label_predict_svm = svm.predict(image_predict_reshape)
 
-print("image 1 predicted")
+label_predict_rf_reshape = np.reshape(label_predict_rf, (4000, -1))
+label_predict_knn_reshape = np.reshape(label_predict_knn, (4000, -1))
+label_predict_nb_reshape = np.reshape(label_predict_nb, (4000, -1))
+# label_predict_svm_reshape = np.reshape(label_predict_svm, (4000, -1))
+
+print("image predicted")
 
 fig, ax = plt.subplots(1, 3)
 
-ax[0].imshow(image_predict)
-ax[0].set_title("Image")
+# ax[0].imshow(image_predict)
+# ax[0].set_title("Image")
 
-ax[1].imshow(label_predict)
-ax[1].set_title("Labels")
+# ax[1].imshow(label_predict)
+# ax[1].set_title("Labels")
 
-ax[2].imshow(label_predict_result_reshape)
-ax[2].set_title("Predicted")
+# ax[2].imshow(label_predict_svm_reshape)
+# ax[2].set_title("Predicted")
+
+fig, ax = plt.subplots(2, 3)
+
+ax[0, 0].imshow(image_predict)
+ax[0, 0].set_title("Image")
+
+ax[0, 1].imshow(label_predict)
+ax[0, 1].set_title("Labels")
+
+ax[0, 2].imshow(label_predict_rf_reshape)
+ax[0, 2].set_title("RF")
+
+ax[1, 0].imshow(label_predict_knn_reshape)
+ax[1, 0].set_title("KNN")
+
+ax[1, 1].imshow(label_predict_nb_reshape)
+ax[1, 1].set_title("NB")
+
+# ax[1, 2].imshow(label_predict_svm_reshape)
+# ax[1, 2].set_title("SVM")
 
 plt.show()
