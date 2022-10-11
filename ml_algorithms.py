@@ -5,7 +5,7 @@
 #   Ray Albert Pangilinan (400065058)
 #   Luke Vanden Broek (400486889)
 
-# Random Forest Classifier
+# ML Algorithms (Random Forest, K-nearest Neighbours, Naive Bayes)
 
 # Imports
 
@@ -90,17 +90,24 @@ fig, ax = plt.subplots(2, 3)
 
 ax[0, 0].imshow(image_predict)
 ax[0, 0].set_title("Image")
+ax[0, 0].axis("off")
 
 ax[0, 1].imshow(label_predict)
 ax[0, 1].set_title("Labels")
+ax[0, 1].axis("off")
+
+ax[0, 2].axis("off")
 
 ax[1, 0].imshow(label_predict_rf_reshape)
-ax[1, 0].set_title("RF")
+ax[1, 0].set_title("Random Forest")
+ax[1, 0].axis("off")
 
 ax[1, 1].imshow(label_predict_knn_reshape)
-ax[1, 1].set_title("KNN")
+ax[1, 1].set_title("K-nearest Neighbours")
+ax[1, 1].axis("off")
 
 ax[1, 2].imshow(label_predict_nb_reshape)
-ax[1, 2].set_title("NB")
+ax[1, 2].set_title("Naive Bayes")
+ax[1, 2].axis("off")
 
 plt.show()
