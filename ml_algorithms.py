@@ -18,7 +18,7 @@ from PIL import Image
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, f1_score
 
 # Reading raw image and class label files from disk
 
@@ -82,6 +82,15 @@ label_predict_rf_reshape = np.reshape(label_predict_rf, (4000, -1))
 label_predict_knn_reshape = np.reshape(label_predict_knn, (4000, -1))
 label_predict_nb_reshape = np.reshape(label_predict_nb, (4000, -1))
 
+rf_accuracy = round(accuracy_score(label_predict_flatten, label_predict_rf) * 100, 2)
+knn_accuracy = round(accuracy_score(label_predict_flatten, label_predict_knn) * 100, 2)
+nb_accuracy = round(accuracy_score(label_predict_flatten, label_predict_nb) * 100, 2)
+
+rf_f1 = round(f1_score(label_predict_flatten, label_predict_rf, average="weighted") * 100, 2)
+knn_f1 = round(f1_score(label_predict_flatten, label_predict_knn, average="weighted") * 100, 2)
+nb_f1 = round(f1_score(label_predict_flatten, label_predict_nb, average="weighted") * 100, 2)
+
+
 print("Labels for image " + str(len(images) - 1) + " predicted.")
 
 # Plotting prediction results
@@ -99,15 +108,15 @@ ax[0, 1].axis("off")
 ax[0, 2].axis("off")
 
 ax[1, 0].imshow(label_predict_rf_reshape)
-ax[1, 0].set_title("Random Forest")
+ax[1, 0].set_title("Random Forest\nAccuracy: " + str(rf_accuracy) + "%\nF1: "+ str(rf_f1) + "%")
 ax[1, 0].axis("off")
 
 ax[1, 1].imshow(label_predict_knn_reshape)
-ax[1, 1].set_title("K-nearest Neighbours")
+ax[1, 1].set_title("K-nearest Neighbours\nAccuracy: " + str(knn_accuracy) + "%\nF1: "+ str(knn_f1) + "%")
 ax[1, 1].axis("off")
 
 ax[1, 2].imshow(label_predict_nb_reshape)
-ax[1, 2].set_title("Naive Bayes")
+ax[1, 2].set_title("Naive Bayes\nAccuracy: " + str(nb_accuracy) + "%\nF1: "+ str(nb_f1) + "%")
 ax[1, 2].axis("off")
 
 plt.show()
