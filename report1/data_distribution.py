@@ -17,6 +17,7 @@ import numpy as np
 from PIL import Image
 import pandas as pd
 
+
 # Reading class reference table and labelled image files from disk
 
 classes_dir = cwd + "/../../dataset/class_dict_seg.csv"

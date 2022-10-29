@@ -20,6 +20,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, f1_score
 
+
 # Reading raw image and class label files from disk
 
 images_dir = cwd + "/../../dataset/dataset/semantic_drone_dataset/original_images/"
