@@ -22,8 +22,8 @@ from sklearn.metrics import accuracy_score, f1_score
 
 # Reading raw image and class label files from disk
 
-images_dir = cwd + "/../dataset/dataset/semantic_drone_dataset/original_images/"
-labels_dir = cwd + "/../dataset/dataset/semantic_drone_dataset/label_images_semantic/"
+images_dir = cwd + "/../../dataset/dataset/semantic_drone_dataset/original_images/"
+labels_dir = cwd + "/../../dataset/dataset/semantic_drone_dataset/label_images_semantic/"
 
 images_paths = os.listdir(images_dir)
 images_paths.sort()
