@@ -17,21 +17,22 @@ import numpy as np
 from PIL import Image
 import pandas as pd
 
-# Reading color image mask files from disk
+# Reading class reference table and labelled image files from disk
 
-labels_dir = cwd + "/../dataset/class_dict_seg.csv"
-masks_dir = cwd + "/../dataset/RGB_color_image_masks/RGB_color_image_masks/"
+classes_dir = cwd + "/../../dataset/class_dict_seg.csv"
+labels_dir = cwd + "/../../dataset/dataset/semantic_drone_dataset/label_images_semantic/"
 
-distribution = pd.read_csv(labels_dir)
+distribution = pd.read_csv(classes_dir)
 rgb_arr = distribution.to_numpy()[:, 1:]
 distribution.insert(4, "count", 0)
 
-masks_paths = os.listdir(masks_dir)
-masks_paths.sort()
-mask_0_filename = masks_paths[0]
+labels_paths = os.listdir(labels_dir)
+labels_paths.sort()
+label_0_filename = labels_paths[0]
 
-masks_paths = list(map(lambda mask : masks_dir + mask, masks_paths))
-mask_0_rgb = np.array(Image.open(mask_0_filename)) * 255
+labels_paths = list(map(lambda label : labels_dir + label, labels_paths))
+label_0 = np.array(Image.open(labels_dir + label_0_filename))
+
 
 # Plotting colour legend
 
@@ -48,19 +49,14 @@ for i, ax in enumerate(fig.axes):
 fig.suptitle("Colour Legend")
 plt.show()
 
-# Counting pixel distribution
-
-for row in mask_0_rgb:
-  for pixel in row:
-    i, = np.where(np.prod(rgb_arr == pixel, axis=-1))
-    distribution.at[i[0], "count"] += 1
-
-print(distribution)
 
 # Plotting pixel distribution
 
+for pixel in label_0.flatten():
+  distribution.at[pixel, "count"] += 1
+
 plt.bar(range(len(labels)), distribution.loc[:, "count"], color=rgb_tuples, width=1)
-plt.title("Pixel Class Distribution for " + mask_0_filename)
+plt.title("Pixel Class Distribution for " + label_0_filename)
 plt.xticks(range(len(labels)), labels, rotation=90)
 plt.xlabel("Class")
 plt.ylabel("Count", rotation=90)
