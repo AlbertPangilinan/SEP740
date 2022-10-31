@@ -45,13 +45,24 @@ plt.show()
 labels_dir = cwd + "/../../dataset/dataset/semantic_drone_dataset/label_images_semantic/"
 labels_paths = os.listdir(labels_dir)
 labels_paths.sort()
-labels_paths = list(map(lambda label : labels_dir + label, labels_paths))
-labels = list(map(lambda img : np.array(Image.open(img)), labels_paths[:275]))
+labels_paths = np.array_split(labels_paths, 4)
+
+
+# Calculating data distribution
+
+print("Calculating distribution for images 1-100...")
+labels = [np.array(Image.open(labels_dir + label)) for label in labels_paths[0]]
+histogram, bin_edges = np.histogram(labels, bins=24, range=(0, 24))
+
+for i in range(1, 4):
+  print("Calculating distribution for images " + str(i * 100 + 1) + "-" + str((i + 1) * 100) + "...")
+  labels = [np.array(Image.open(labels_dir + label)) for label in labels_paths[i]]
+  histogram += np.histogram(labels, bins=24, range=(0, 24))[0]
+
 
 
 # Plotting pixel distribution
 
-histogram, bin_edges = np.histogram(labels, bins=24, range=(0, 24))
 
 plt.bar(bin_edges[0:-1], histogram, color=rgb_tuples, width=1)
 plt.title("Pixel Class Distribution")
