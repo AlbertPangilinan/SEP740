@@ -5,7 +5,7 @@
 #   Ray Albert Pangilinan (400065058)
 #   Luke Vanden Broek (400486889)
 
-# Data Distribution (runs out of memory when loading >275 images, using 16GB RAM)
+# Data Distribution
 
 # Imports
 
@@ -24,7 +24,7 @@ classes_dir = cwd + "/../../dataset/class_dict_seg.csv"
 classes_pd = pd.read_csv(classes_dir)
 classes = classes_pd.to_numpy()[:, :1].flatten()
 rgb_arr = classes_pd.to_numpy()[:, 1:]
-rgb_tuples = list(map(lambda col : tuple(col / 255), rgb_arr))
+rgb_tuples = [tuple(col / 255) for col in rgb_arr]
 
 
 # Plotting colour legend
@@ -50,19 +50,18 @@ labels_paths = np.array_split(labels_paths, 4)
 
 # Calculating data distribution
 
-print("Calculating distribution for images 1-100...")
-labels = [np.array(Image.open(labels_dir + label)) for label in labels_paths[0]]
-histogram, bin_edges = np.histogram(labels, bins=24, range=(0, 24))
+histogram, bin_edges = [], []
 
-for i in range(1, 4):
+for i in range(len(labels_paths)):
   print("Calculating distribution for images " + str(i * 100 + 1) + "-" + str((i + 1) * 100) + "...")
   labels = [np.array(Image.open(labels_dir + label)) for label in labels_paths[i]]
-  histogram += np.histogram(labels, bins=24, range=(0, 24))[0]
-
+  if (i == 0):
+    histogram, bin_edges = np.histogram(labels, bins=24, range=(0, 24))
+  else:
+    histogram += np.histogram(labels, bins=24, range=(0, 24))[0]
 
 
 # Plotting pixel distribution
-
 
 plt.bar(bin_edges[0:-1], histogram, color=rgb_tuples, width=1)
 plt.title("Pixel Class Distribution")

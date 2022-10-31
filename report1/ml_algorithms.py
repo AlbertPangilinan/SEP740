@@ -86,7 +86,6 @@ rf_f1 = round(f1_score(label_predict_flatten, label_predict_rf, average="weighte
 knn_f1 = round(f1_score(label_predict_flatten, label_predict_knn, average="weighted") * 100, 2)
 nb_f1 = round(f1_score(label_predict_flatten, label_predict_nb, average="weighted") * 100, 2)
 
-
 print("Labels for image " + str(len(images) - 1) + " predicted.")
 
 
