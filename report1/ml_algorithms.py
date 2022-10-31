@@ -28,26 +28,20 @@ labels_dir = cwd + "/../../dataset/dataset/semantic_drone_dataset/label_images_s
 
 images_paths = os.listdir(images_dir)
 images_paths.sort()
-image_0_filename = images_paths[0]
 
 labels_paths = os.listdir(labels_dir)
 labels_paths.sort()
-label_0_filename = labels_paths[0]
 
-images_paths = list(map(lambda img : images_dir + img, images_paths))
-labels_paths = list(map(lambda img : labels_dir + img, labels_paths))
+images = [np.array(Image.open(images_dir + img)) for img in images_paths[:10]]
+labels = [np.array(Image.open(labels_dir + img)) for img in labels_paths[:10]]
 
-images_paths.sort()
-labels_paths.sort()
-
-images = list(map(lambda img : np.array(Image.open(img)), images_paths[:10]))
-labels = list(map(lambda img : np.array(Image.open(img)), labels_paths[:10]))
 
 # Defining ML algorithms
 
 rf = RandomForestClassifier(max_depth=2)
 knn = KNeighborsClassifier(n_neighbors = 3)
 nb = GaussianNB()
+
 
 # Fitting each image to each model
 
@@ -65,7 +59,8 @@ for i in range(len(images) - 1):
 
   print("Image " + str(i) + " fitted to all models.")
 
-# Predict labels for one image using trained models
+
+# Predicting labels for one image using trained models
 
 print("Predicting labels for image " + str(len(images) - 1) + "...")
 
@@ -93,6 +88,7 @@ nb_f1 = round(f1_score(label_predict_flatten, label_predict_nb, average="weighte
 
 
 print("Labels for image " + str(len(images) - 1) + " predicted.")
+
 
 # Plotting prediction results
 
