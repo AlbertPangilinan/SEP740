@@ -34,6 +34,7 @@ labels_paths = np.array_split(labels_paths, 4)
 # divide_image() helper function
 
 def divide_image(image, tile_height, tile_width):
+  # RGB images
   if (len(image.shape) == 3):
     image_height, image_width, channels = image.shape
 
@@ -47,6 +48,7 @@ def divide_image(image, tile_height, tile_width):
     num_tiles = (image_height // tile_height) * (image_width // tile_width)
     tiles_arr = tiles_arr.reshape(num_tiles, tile_height, tile_width, channels)
 
+  # Single channel images (labels)
   elif (len(image.shape) == 2):
     image_height, image_width = image.shape
 
