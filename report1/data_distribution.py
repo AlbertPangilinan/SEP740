@@ -40,7 +40,7 @@ fig.suptitle("Colour Legend")
 plt.show()
 
 
-# Reading labelled image files from disk
+# Reading labelled image files from disk (4 bathes of 100 images each)
 
 labels_dir = cwd + "/../../dataset/dataset/semantic_drone_dataset/label_images_semantic/"
 labels_paths = os.listdir(labels_dir)
@@ -63,7 +63,8 @@ for i in range(len(labels_paths)):
 
 # Plotting pixel distribution
 
-plt.bar(bin_edges[0:-1], histogram, color=rgb_tuples, width=1)
+bars = plt.bar(bin_edges[0:-1], histogram, color=rgb_tuples, width=1)
+plt.bar_label(bars)
 plt.title("Pixel Class Distribution")
 plt.xticks(range(len(classes)), classes, rotation=90)
 plt.xlabel("Class")

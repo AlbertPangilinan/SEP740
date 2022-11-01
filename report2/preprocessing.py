@@ -5,7 +5,7 @@
 #   Ray Albert Pangilinan (400065058)
 #   Luke Vanden Broek (400486889)
 
-# Data Distribution
+# Data Preprocessing - 000.png (normalization and image resizing)
 
 # Imports
 
@@ -18,29 +18,7 @@ from PIL import Image
 import pandas as pd
 
 
-# Reading class reference table from disk
-
-classes_dir = cwd + "/../../dataset/class_dict_seg.csv"
-classes_pd = pd.read_csv(classes_dir)
-classes = classes_pd.to_numpy()[:, :1].flatten()
-rgb_arr = classes_pd.to_numpy()[:, 1:]
-rgb_tuples = [tuple(col / 255) for col in rgb_arr]
-
-
-# Plotting colour legend
-
-# fig, axs = plt.subplots(6, 4)
-
-# for i, ax in enumerate(fig.axes):
-#   ax.imshow([[rgb_tuples[i]]])
-#   ax.set_title(classes[i])
-#   ax.axis("off")
-
-# fig.suptitle("Colour Legend")
-# plt.show()
-
-
-# Reading image files from disk
+# Reading image and label files from disk (4 batches of 100 images each)
 
 images_dir = cwd + "/../../dataset/dataset/semantic_drone_dataset/original_images/"
 images_paths = os.listdir(images_dir)
@@ -53,8 +31,7 @@ labels_paths.sort()
 labels_paths = np.array_split(labels_paths, 4)
 
 
-
-# Dividing original images into smaller images of equal size 
+# divide_image() helper function
 
 def divide_image(image, tile_height, tile_width):
     if (len(image.shape) == 3):
@@ -84,80 +61,50 @@ def divide_image(image, tile_height, tile_width):
 
     return tiles_arr
 
-image = np.array(Image.open(images_dir + images_paths[0][0]))
-image_tiles_4 = divide_image(image, 2000, 3000)
-image_tiles_16 = divide_image(image, 1000, 1500)
+
+# Normalizing image pixels and dividing original images into 4 images of equal size 
+
+image_name = images_paths[0][0]
+image = np.array(Image.open(images_dir + image_name)) / 255
+image_tiles = divide_image(image, 2000, 3000)
+
+
+# Plotting original image and quartered image for comparison
 
 plt.imshow(image)
 plt.axis("off")
-plt.title("Original Image")
+plt.title(image_name + " - Original")
 
 fig, ax = plt.subplots(2, 2)
 
 for i, ax in enumerate(fig.axes):
-  ax.imshow(image_tiles_4[i])
+  ax.imshow(image_tiles[i])
   ax.axis("off")
 
-fig.suptitle("Image / 4")
-
-fig, ax = plt.subplots(4, 4)
-
-for i, ax in enumerate(fig.axes):
-  ax.imshow(image_tiles_16[i])
-  ax.axis("off")
-
-fig.suptitle("Image / 16")
+fig.suptitle(image_name + " - 4 tiles")
 
 plt.show()
 
 
-# Dividing original label images into smaller images of equal size (16 tiles seems to cause errors in labels)
+# Dividing original label images into 4 images of equal size
 
-label = np.array(Image.open(labels_dir + labels_paths[0][0]))
-label_tiles_4 = divide_image(label, 2000, 3000)
-label_tiles_16 = divide_image(label, 1000, 1500)
+label_name = labels_paths[0][0]
+label = np.array(Image.open(labels_dir + label_name))
+label_tiles = divide_image(label, 2000, 3000)
+
+
+# Plotting original label image and quartered label image for comparison
 
 plt.imshow(label)
 plt.axis("off")
-plt.title("Original Label")
+plt.title(label_name + " - Original")
 
 fig, ax = plt.subplots(2, 2)
 
 for i, ax in enumerate(fig.axes):
-  ax.imshow(label_tiles_4[i])
+  ax.imshow(label_tiles[i])
   ax.axis("off")
 
-fig.suptitle("Label / 4")
-
-fig, ax = plt.subplots(4, 4)
-
-for i, ax in enumerate(fig.axes):
-  ax.imshow(label_tiles_16[i])
-  ax.axis("off")
-
-fig.suptitle("Label / 16")
+fig.suptitle(label_name + " - 4 tiles")
 
 plt.show()
-
-
-# Calculating data distribution
-
-# histogram, bin_edges = [], []
-
-# for i in range(len(images_paths)):
-#   print("Calculating distribution for images " + str(i * 100 + 1) + "-" + str((i + 1) * 100) + "...")
-#   images = [np.array(Image.open(images_dir + image)) for image in images_paths[i]]
-#   if (i == 0):
-#     histogram, bin_edges = np.histogram(images, bins=24, range=(0, 24))
-#   else:
-#     histogram += np.histogram(images, bins=24, range=(0, 24))[0]
-
-
-# Plotting pixel distribution
-
-# plt.bar(bin_edges[0:-1], histogram, color=rgb_tuples, width=1)
-# plt.title("Pixel Class Distribution")
-# plt.xticks(range(len(classes)), classes, rotation=90)
-# plt.xlabel("Class")
-# plt.ylabel("Count", rotation=90)
-# plt.show()
