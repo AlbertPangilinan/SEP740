@@ -1,4 +1,4 @@
-# SEP740 - Deep Learning (McMaster University)
+# Deep Learning - McMaster University
 
 ### Aerial Perspective Object Detection
 
